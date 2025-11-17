@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 Road Glide Setup Calculator - Unofficial Tool</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 10px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #ff6600;
+            text-align: center;
+            margin-bottom: 5px;
+            font-size: 24px;
+        }
+        h2 {
+            color: #333;
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+            font-size: 14px;
+        }
+        input[type="number"], select {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            -webkit-appearance: none;
+        }
+        input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: #ff6600;
+        }
+        .results-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .result {
+            background-color: #ff6600;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            display: none;
+        }
+        .result.show {
+            display: block;
+        }
+        .result h3 {
+            margin: 0 0 8px 0;
+            font-size: 18px;
+            border-bottom: 2px solid white;
+            padding-bottom: 8px;
+        }
+        .result h4 {
+            margin: 10px 0 5px 0;
+            font-size: 14px;
+            font-weight: normal;
+            opacity: 0.9;
+        }
+        .result p {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+        .tire-pressure-result {
+            background-color: #0066cc;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: none;
+        }
+        .tire-pressure-result.show {
+            display: block;
+        }
+        .tire-pressure-result h3 {
+            margin: 0 0 10px 0;
+            font-size: 18px;
+            border-bottom: 2px solid white;
+            padding-bottom: 8px;
+        }
+        .tire-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .tire-box {
+            background-color: rgba(255,255,255,0.1);
+            padding: 12px;
+            border-radius: 5px;
+        }
+        .tire-box h4 {
+            margin: 0 0 8px 0;
+            font-size: 16px;
+        }
+        .tire-box p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        .total-weight {
+            background-color: #f0f0f0;
+            padding: 12px;
+            border-radius: 5px;
+            text-align: center;
+            margin-top: 15px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .note, .measurement-note, .warning-note {
+            margin-top: 15px;
+            padding: 12px;
+            border-left: 4px solid #ff6600;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .note {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .measurement-note {
+            background-color: #e7f3ff;
+            border-left-color: #0066cc;
+            color: #004085;
+        }
+        .warning-note {
+            background-color: #ffe5e5;
+            border-left-color: #cc0000;
+            color: #660000;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #ff6600;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            -webkit-tap-highlight-color: transparent;
+        }
+        button:active {
+            background-color: #cc5200;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 5px;
+            margin-top: 15px;
+            display: none;
+            font-size: 14px;
+        }
+        .error.show {
+            display: block;
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 5px;
+            }
+            .container {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 20px;
+            }
+            h2 {
+                font-size: 14px;
+            }
+            .results-container {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            .tire-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            .result h3, .tire-pressure-result h3 {
+                font-size: 16px;
+            }
+            .result p {
+                font-size: 14px;
+            }
+        }
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 18px;
+            }
+            input[type="number"], select {
+                padding: 10px;
+                font-size: 14px;
+            }
+            button {
+                padding: 12px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>2025 Harley-Davidson Road Glide</h1>
+        <h2>Suspension & Tire Pressure Calculator</h2>
+        
+        <div style="background-color: #ffe5e5; border: 2px solid #cc0000; border-radius: 5px; padding: 12px; margin-bottom: 20px;">
+            <p style="margin: 0; font-size: 13px; color: #660000; text-align: center;">
+                <strong>⚠ IMPORTANT:</strong> Use at your own risk. Always verify settings with your owner's manual. 
+                Not affiliated with Harley-Davidson®. See full disclaimer below.
+            </p>
+        </div>
+        
+        <div class="input-group">
+            <label for="riderWeight">Rider Weight (lbs):</label>
+            <input type="number" id="riderWeight" min="0" max="500" placeholder="Enter rider weight">
+        </div>
+        
+        <div class="input-group">
+            <label for="passengerWeight">Passenger Weight (lbs):</label>
+            <input type="number" id="passengerWeight" min="0" max="500" value="0" placeholder="Enter passenger weight (0 if no passenger)">
+        </div>
+        
+        <div class="input-group">
+            <label for="cargoWeight">Cargo Weight (lbs):</label>
+            <input type="number" id="cargoWeight" min="0" max="200" value="0" placeholder="Enter cargo weight (0 if no cargo)">
+        </div>
+        
+        <div class="input-group">
+            <label for="ambientTemp">Ambient Temperature:</label>
+            <select id="ambientTemp">
+                <option value="3">38°F (3°C)</option>
+                <option value="9">48°F (9°C)</option>
+                <option value="14">58°F (14°C)</option>
+                <option value="20" selected>68°F (20°C)</option>
+                <option value="26">79°F (26°C)</option>
+                <option value="31">88°F (31°C)</option>
+                <option value="37">99°F (37°C)</option>
+                <option value="42">≥108°F (42°C)</option>
+            </select>
+        </div>
+        
+        <div class="input-group">
+            <label for="tireCondition">Tire Condition:</label>
+            <select id="tireCondition">
+                <option value="cold">Cold (Not ridden for 2+ hours)</option>
+                <option value="warm">Warm (Recently ridden)</option>
+            </select>
+        </div>
+        
+        <button onclick="calculateAll()">Calculate Settings</button>
+        
+        <div class="total-weight" id="totalWeight"></div>
+        
+        <div class="error" id="error"></div>
+        
+        <div class="results-container">
+            <div class="result" id="resultLeft">
+                <h3>LEFT SHOCK</h3>
+                <h4>(Hydraulic Preload Adjuster)</h4>
+                <p id="leftSetting"></p>
+            </div>
+            
+            <div class="result" id="resultRight">
+                <h3>RIGHT SHOCK</h3>
+                <h4>(Threaded Preload Adjuster)</h4>
+                <p id="mmResult"></p>
+                <p id="inchResult"></p>
+            </div>
+        </div>
+        
+        <div class="tire-pressure-result" id="tirePressureResult">
+            <h3>RECOMMENDED TIRE PRESSURES</h3>
+            <div class="tire-grid">
+                <div class="tire-box">
+                    <h4>FRONT TIRE</h4>
+                    <p id="frontPressure"></p>
+                    <p style="font-size: 12px; opacity: 0.9; margin-top: 8px;">19" Dunlop D408F<br>130/60B19 M/C 61H</p>
+                </div>
+                <div class="tire-box">
+                    <h4>REAR TIRE</h4>
+                    <p id="rearPressure"></p>
+                    <p style="font-size: 12px; opacity: 0.9; margin-top: 8px;">18" Dunlop D407T<br>180/55B18 M/C 80H</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="warning-note">
+            <strong>⚠ DISCLAIMER - USE AT YOUR OWN RISK:</strong> This calculator is provided for informational purposes only. 
+            Always consult your official Harley-Davidson owner's manual for authoritative specifications and safety information. 
+            The creator of this calculator assumes no responsibility for any damage, injury, or loss resulting from the use of 
+            this tool. You are solely responsible for properly maintaining and adjusting your motorcycle according to manufacturer 
+            specifications. When in doubt, consult a certified Harley-Davidson technician.
+        </div>
+        
+        <div class="warning-note">
+            <strong>⚠ TIRE PRESSURE WARNING:</strong> Check tire pressures with a good gauge before riding while tires are cold. 
+            Tires can remain warm for up to 2 hours after riding. For most accurate readings, check pressures before riding 
+            when tires are cold (ambient temp 68°F or less). Tire pressure increases as tires warm from riding and high ambient temperatures.
+            <br><br>
+            <strong>Note:</strong> Temperature adjustments below 68°F (38°F, 48°F, 58°F) are extrapolated from the manufacturer's table 
+            using the established 7 kPa per temperature increment pattern. At cold temperatures with cold tires, you may need 
+            slightly lower pressures than the base specification.
+        </div>
+        
+        <div class="measurement-note">
+            <strong>RIGHT SHOCK MEASUREMENT:</strong> The threaded preload adjustment is measured as the distance from the 
+            <strong>bottom of the lock ring</strong> to the <strong>top of the adjuster ring</strong>.<br><br>
+            <strong>LEFT SHOCK ADJUSTMENT:</strong> Hydraulic preload adjuster with 7 positions plus additional cargo adjustment 
+            (turns from MIN position).
+        </div>
+        
+        <div class="note">
+            <strong>SUSPENSION ADJUSTMENT GUIDE:</strong><br>
+            <strong>Left Shock (Hydraulic):</strong><br>
+            • <strong>Step 1:</strong> Set base position (1-7) based on rider + passenger weight<br>
+            • <strong>Step 2:</strong> Add cargo adjustment turns from MIN position based on cargo weight<br>
+            <br>
+            <strong>Right Shock (Threaded):</strong><br>
+            • Single adjustment based on total combined weight (rider + passenger + cargo)<br>
+            • Measure from bottom of lock ring to top of adjuster ring<br>
+            <br>
+            <strong>Valid Ranges:</strong> Rider weight 150-290 lbs, Passenger/Cargo 0-180 lbs combined. 
+            Values outside these ranges will be extrapolated.
+        </div>
+        
+        <div class="measurement-note" style="border-left-color: #666; background-color: #f8f8f8; color: #333;">
+            <strong>DATA SOURCE:</strong><br>
+            Harley-Davidson® Owner's Manual<br>
+            Document: 94001244_1905601_en_US<br>
+            2025 HARLEY-DAVIDSON® OWNER'S MANUAL / FLHX, FLTRX MODELS<br>
+            <br>
+            • Table 21: Rear Shock Absorbers Threaded Preload Adjuster Settings for Rider/Passenger<br>
+            • Table 22: Left Shock Absorber Hydraulic Preload Adjuster Settings for Cargo<br>
+            • Table 1: Specified Tires<br>
+            • Table 2: Tire Pressure Adjustment<br>
+            <br>
+            <em>Note: Temperature adjustments below 68°F are extrapolated using the established 7 kPa increment pattern from the manufacturer's data.</em>
+        </div>
+        
+        <div class="warning-note" style="margin-top: 20px; font-size: 12px;">
+            <strong>LEGAL DISCLAIMER:</strong><br>
+            This calculator is an independent tool created for informational and educational purposes only. It is not affiliated with, 
+            endorsed by, or sponsored by Harley-Davidson Motor Company. All calculations are based on publicly available data from the 
+            official owner's manual. The accuracy of results depends on correct input of weight values and environmental conditions.<br><br>
+            
+            <strong>NO WARRANTY:</strong> This tool is provided "AS IS" without warranty of any kind, either express or implied, 
+            including but not limited to warranties of merchantability, fitness for a particular purpose, or non-infringement. 
+            The entire risk as to the quality and performance of the calculations is with you.<br><br>
+            
+            <strong>LIMITATION OF LIABILITY:</strong> In no event shall the creator, contributors, or distributors of this calculator 
+            be liable for any direct, indirect, incidental, special, exemplary, or consequential damages (including but not limited to 
+            procurement of substitute services; loss of use, data, or profits; personal injury; or business interruption) however caused 
+            and on any theory of liability, whether in contract, strict liability, or tort arising in any way out of the use of this tool, 
+            even if advised of the possibility of such damage.<br><br>
+            
+            <strong>YOUR RESPONSIBILITY:</strong> Proper motorcycle maintenance and adjustment is critical for your safety. Always verify 
+            all settings with your official owner's manual. If you are unsure about any adjustment procedure, seek the assistance of a 
+            qualified, certified Harley-Davidson technician. Improper suspension or tire pressure settings can affect motorcycle handling, 
+            stability, and safety.<br><br>
+            
+            Harley-Davidson® is a registered trademark of H-D U.S.A., LLC. This calculator is not affiliated with or endorsed by 
+            Harley-Davidson Motor Company.
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 12px;">
+            <p>Version 1.0 | Last Updated: November 2024</p>
+            <p>Calculator created for educational purposes | Data source: 2025 H-D Owner's Manual (94001244_1905601_en_US)</p>
+            <p style="margin-top: 10px;">
+                <a href="https://github.com/yourusername/road-glide-setup-calculator" 
+                   style="color: #ff6600; text-decoration: none;" 
+                   target="_blank">View on GitHub</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Right shock - Threaded preload data table from the manual
+        const rightShockData = {
+            riderWeights: [150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290],
+            passengerWeights: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180],
+            preloadValues: [
+                [4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 17, 18, 19, 20, 21, 22, 23, 24],      // 150 lbs
+                [5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 20, 21, 22, 23, 24, 25],      // 160 lbs
+                [6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 22, 23, 24, 25, 26],     // 170 lbs
+                [7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 24, 25, 26, 27],    // 180 lbs
+                [7, 8, 10, 11, 12, 13, 14, 15, 16, 18, 19, 20, 21, 22, 23, 24, 25, 27, 28],   // 190 lbs
+                [8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 20, 21, 22, 23, 24, 25, 26, 27, 29],   // 200 lbs
+                [9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28, 29],  // 210 lbs
+                [10, 11, 12, 13, 14, 15, 17, 18, 19, 20, 21, 22, 23, 25, 26, 27, 28, 29, 30], // 220 lbs
+                [11, 12, 13, 14, 15, 16, 17, 19, 20, 21, 22, 23, 24, 25, 27, 28, 29, 30, 31], // 230 lbs
+                [11, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26, 27, 28, 30, 31, 32], // 240 lbs
+                [12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 24, 25, 26, 27, 28, 29, 30, 32, 33], // 250 lbs
+                [13, 14, 15, 17, 18, 19, 20, 21, 22, 23, 24, 26, 27, 28, 29, 30, 31, 32, 34], // 260 lbs
+                [14, 15, 16, 17, 18, 20, 21, 22, 23, 24, 25, 26, 28, 29, 30, 31, 32, 33, 34], // 270 lbs
+                [15, 16, 17, 18, 19, 20, 22, 23, 24, 25, 26, 27, 28, 30, 31, 32, 33, 34, 35], // 280 lbs
+                [16, 17, 18, 19, 20, 21, 22, 24, 25, 26, 27, 28, 29, 30, 31, 33, 34, 35, 39]  // 290 lbs
+            ]
+        };
+
+        // Left shock - Hydraulic preload adjuster positions (1-7) for rider + passenger
+        const leftShockData = {
+            riderWeights: [150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290],
+            passengerWeights: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180],
+            preloadValues: [
+                [1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5],      // 150 lbs
+                [1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6],      // 160 lbs
+                [1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6],      // 170 lbs
+                [2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6],      // 180 lbs
+                [2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6],      // 190 lbs
+                [2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7],      // 200 lbs
+                [2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7],      // 210 lbs
+                [2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7],      // 220 lbs
+                [3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7],      // 230 lbs
+                [3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7],      // 240 lbs
+                [3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 7],      // 250 lbs
+                [3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7],      // 260 lbs
+                [4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7],      // 270 lbs
+                [4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 7],      // 280 lbs
+                [4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7]       // 290 lbs
+            ]
+        };
+
+        // Left shock - Cargo adjustment (Table 22: Turns from MIN)
+        const cargoAdjustmentData = {
+            cargoWeights: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+            turnsFromMin: [0, 2, 4, 6, 9, 11, 14, 17, 20, 20, 20]
+        };
+
+        // Tire pressure specifications (Table 1)
+        const baseTirePressure = {
+            front: { psi: 36, kpa: 248 },
+            rear: { psi: 40, kpa: 276 }
+        };
+
+        // Tire pressure adjustments (Table 2 + extrapolated lower temps)
+        const tirePressureAdjustments = {
+            cold: {  // Not ridden for 2+ hours
+                3: { psi: -3, kpa: -21 },   // 38°F - extrapolated
+                9: { psi: -2, kpa: -14 },   // 48°F - extrapolated
+                14: { psi: -1, kpa: -7 },   // 58°F - extrapolated
+                20: { psi: 0, kpa: 0 },
+                26: { psi: 1, kpa: 7 },
+                31: { psi: 2, kpa: 14 },
+                37: { psi: 3, kpa: 21 },
+                42: { psi: 4, kpa: 28 }
+            },
+            warm: {  // Recently ridden
+                3: { psi: 2, kpa: 13 },     // 38°F - extrapolated
+                9: { psi: 3, kpa: 20 },     // 48°F - extrapolated
+                14: { psi: 4, kpa: 27 },    // 58°F - extrapolated
+                20: { psi: 5, kpa: 34 },
+                26: { psi: 6, kpa: 41 },
+                31: { psi: 7, kpa: 48 },
+                37: { psi: 8, kpa: 55 },
+                42: { psi: 9, kpa: 62 }
+            }
+        };
+
+        function interpolate(x, x0, x1, y0, y1) {
+            if (x1 === x0) return y0;
+            return y0 + (x - x0) * (y1 - y0) / (x1 - x0);
+        }
+
+        function interpolateCargoTurns(cargoWeight) {
+            const weights = cargoAdjustmentData.cargoWeights;
+            const turns = cargoAdjustmentData.turnsFromMin;
+            
+            // Handle exact matches and bounds
+            if (cargoWeight <= 0) return 0;
+            if (cargoWeight >= weights[weights.length - 1]) return turns[turns.length - 1];
+            
+            // Find surrounding weights
+            for (let i = 0; i < weights.length - 1; i++) {
+                if (cargoWeight >= weights[i] && cargoWeight <= weights[i + 1]) {
+                    return interpolate(cargoWeight, weights[i], weights[i + 1], turns[i], turns[i + 1]);
+                }
+            }
+            
+            return 0;
+        }
+
+        function bilinearInterpolate(data, riderWeight, totalPassengerCargo) {
+            const riderWeights = data.riderWeights;
+            const passengerWeights = data.passengerWeights;
+            
+            // Find surrounding rider weights
+            let r0 = 0, r1 = 0;
+            for (let i = 0; i < riderWeights.length - 1; i++) {
+                if (riderWeight >= riderWeights[i] && riderWeight <= riderWeights[i + 1]) {
+                    r0 = i;
+                    r1 = i + 1;
+                    break;
+                }
+            }
+            
+            // Handle extrapolation for rider weight
+            if (riderWeight < riderWeights[0]) {
+                r0 = 0;
+                r1 = 1;
+            } else if (riderWeight > riderWeights[riderWeights.length - 1]) {
+                r0 = riderWeights.length - 2;
+                r1 = riderWeights.length - 1;
+            }
+            
+            // Find surrounding passenger weights
+            let p0 = 0, p1 = 0;
+            for (let i = 0; i < passengerWeights.length - 1; i++) {
+                if (totalPassengerCargo >= passengerWeights[i] && totalPassengerCargo <= passengerWeights[i + 1]) {
+                    p0 = i;
+                    p1 = i + 1;
+                    break;
+                }
+            }
+            
+            // Handle extrapolation for passenger weight
+            if (totalPassengerCargo < passengerWeights[0]) {
+                p0 = 0;
+                p1 = 1;
+            } else if (totalPassengerCargo > passengerWeights[passengerWeights.length - 1]) {
+                p0 = passengerWeights.length - 2;
+                p1 = passengerWeights.length - 1;
+            }
+            
+            // Get the four corner values
+            const q11 = data.preloadValues[r0][p0];
+            const q12 = data.preloadValues[r0][p1];
+            const q21 = data.preloadValues[r1][p0];
+            const q22 = data.preloadValues[r1][p1];
+            
+            // Interpolate in passenger weight direction
+            const r1_interp = interpolate(totalPassengerCargo, passengerWeights[p0], passengerWeights[p1], q11, q12);
+            const r2_interp = interpolate(totalPassengerCargo, passengerWeights[p0], passengerWeights[p1], q21, q22);
+            
+            // Interpolate in rider weight direction
+            const result = interpolate(riderWeight, riderWeights[r0], riderWeights[r1], r1_interp, r2_interp);
+            
+            return result;
+        }
+
+        function calculateAll() {
+            const riderWeight = parseFloat(document.getElementById('riderWeight').value);
+            const passengerWeight = parseFloat(document.getElementById('passengerWeight').value) || 0;
+            const cargoWeight = parseFloat(document.getElementById('cargoWeight').value) || 0;
+            const ambientTemp = parseInt(document.getElementById('ambientTemp').value);
+            const tireCondition = document.getElementById('tireCondition').value;
+            
+            const errorDiv = document.getElementById('error');
+            const resultLeftDiv = document.getElementById('resultLeft');
+            const resultRightDiv = document.getElementById('resultRight');
+            const tirePressureResultDiv = document.getElementById('tirePressureResult');
+            const totalWeightDiv = document.getElementById('totalWeight');
+            
+            // Reset displays
+            errorDiv.classList.remove('show');
+            resultLeftDiv.classList.remove('show');
+            resultRightDiv.classList.remove('show');
+            tirePressureResultDiv.classList.remove('show');
+            totalWeightDiv.textContent = '';
+            
+            // Validate inputs
+            if (!riderWeight || riderWeight <= 0) {
+                errorDiv.textContent = 'Please enter a valid rider weight.';
+                errorDiv.classList.add('show');
+                return;
+            }
+            
+            if (passengerWeight < 0 || cargoWeight < 0) {
+                errorDiv.textContent = 'Passenger and cargo weights cannot be negative.';
+                errorDiv.classList.add('show');
+                return;
+            }
+            
+            // Calculate total weights
+            const totalPassengerCargo = passengerWeight + cargoWeight;
+            const totalWeight = riderWeight + totalPassengerCargo;
+            
+            let weightBreakdown = `Total Weight: ${totalWeight} lbs`;
+            if (passengerWeight > 0 && cargoWeight > 0) {
+                weightBreakdown += ` (Rider: ${riderWeight} + Passenger: ${passengerWeight} + Cargo: ${cargoWeight})`;
+            } else if (passengerWeight > 0) {
+                weightBreakdown += ` (Rider: ${riderWeight} + Passenger: ${passengerWeight})`;
+            } else if (cargoWeight > 0) {
+                weightBreakdown += ` (Rider: ${riderWeight} + Cargo: ${cargoWeight})`;
+            }
+            totalWeightDiv.textContent = weightBreakdown;
+            
+            // Calculate preload for left shock
+            // Base position uses rider + passenger only (not cargo)
+            const leftPosition = bilinearInterpolate(leftShockData, riderWeight, passengerWeight);
+            const leftPositionRounded = Math.max(1, Math.min(7, Math.round(leftPosition)));
+            
+            // Cargo adjustment uses cargo weight only
+            const cargoTurns = interpolateCargoTurns(cargoWeight);
+            const cargoTurnsRounded = Math.round(cargoTurns);
+            
+            // Calculate preload for right shock (uses rider + passenger + cargo)
+            const rightPreloadMm = bilinearInterpolate(rightShockData, riderWeight, totalPassengerCargo);
+            const rightPreloadMmRounded = Math.round(rightPreloadMm);
+            const rightPreloadInches = (rightPreloadMmRounded / 25.4).toFixed(3);
+            
+            // Display results for left shock
+            let leftDisplay = `<strong>Position ${leftPositionRounded}</strong><br>(of 7 positions)`;
+            if (cargoWeight > 0) {
+                leftDisplay += `<br><br><strong>+ ${cargoTurnsRounded} turns</strong><br>(cargo adjustment from MIN)`;
+            }
+            document.getElementById('leftSetting').innerHTML = leftDisplay;
+            
+            // Display results for right shock
+            document.getElementById('mmResult').innerHTML = `<strong>${rightPreloadMmRounded} mm</strong>`;
+            document.getElementById('inchResult').innerHTML = `<strong>${rightPreloadInches} inches</strong>`;
+            
+            resultLeftDiv.classList.add('show');
+            resultRightDiv.classList.add('show');
+            
+            // Calculate tire pressures
+            const adjustment = tirePressureAdjustments[tireCondition][ambientTemp];
+            const frontPsi = baseTirePressure.front.psi + adjustment.psi;
+            const rearPsi = baseTirePressure.rear.psi + adjustment.psi;
+            const frontKpa = baseTirePressure.front.kpa + adjustment.kpa;
+            const rearKpa = baseTirePressure.rear.kpa + adjustment.kpa;
+            
+            // Display tire pressure results
+            document.getElementById('frontPressure').innerHTML = 
+                `<strong>${frontPsi} psi (${frontKpa} kPa)</strong>`;
+            document.getElementById('rearPressure').innerHTML = 
+                `<strong>${rearPsi} psi (${rearKpa} kPa)</strong>`;
+            
+            tirePressureResultDiv.classList.add('show');
+            
+            // Show warning if outside recommended range
+            let warnings = [];
+            if (riderWeight < 150 || riderWeight > 290) {
+                warnings.push('<strong>Warning:</strong> Rider weight is outside the recommended range (150-290 lbs). Suspension results are extrapolated.');
+            }
+            
+            if (totalPassengerCargo > 180) {
+                warnings.push('<strong>Warning:</strong> Combined passenger and cargo weight exceeds table maximum (180 lbs). Suspension results are extrapolated.');
+            }
+            
+            if (cargoWeight > 100) {
+                warnings.push('<strong>Warning:</strong> Cargo weight exceeds table maximum (100 lbs). Cargo turns adjustment is capped at 20 turns.');
+            }
+            
+            if (warnings.length > 0) {
+                errorDiv.innerHTML = warnings.join('<br>');
+                errorDiv.classList.add('show');
+            }
+        }
+        
+        // Allow Enter key to trigger calculation
+        document.getElementById('riderWeight').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                calculateAll();
+            }
+        });
+        
+        document.getElementById('passengerWeight').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                calculateAll();
+            }
+        });
+        
+        document.getElementById('cargoWeight').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                calculateAll();
+            }
+        });
+    </script>
+</body>
+</html>
